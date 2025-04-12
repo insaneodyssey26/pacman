@@ -6,8 +6,8 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
   const [currentTheme, setCurrentTheme] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
-  const [isGameOver, setIsGameOver] = useState(false)
+  const [isPaused] = useState(false)
+  const [isGameOver] = useState(false)
 
   // Array of background themes that will rotate
   const themes = [
@@ -25,7 +25,7 @@ function App() {
     return () => clearInterval(interval)
   }, [])
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = () => {
     if (!isPaused && !isGameOver) {
       const activeElement = document.activeElement as HTMLElement;
       if (activeElement) {
