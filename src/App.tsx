@@ -6,7 +6,9 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
   const [currentTheme, setCurrentTheme] = useState(0)
-  
+  const [isPaused, setIsPaused] = useState(false)
+  const [isGameOver, setIsGameOver] = useState(false)
+
   // Array of background themes that will rotate
   const themes = [
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -14,7 +16,7 @@ function App() {
     'linear-gradient(to right, #00b09b, #96c93d)',
     'linear-gradient(to right, #ff8177 0%, #ff867a 0%, #ff8c7f 21%, #f99185 52%, #cf556c 78%, #b12a5b 100%)'
   ]
-  
+
   // Auto-rotate themes every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,6 +24,22 @@ function App() {
     }, 10000)
     return () => clearInterval(interval)
   }, [])
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (!isPaused && !isGameOver) {
+      const activeElement = document.activeElement as HTMLElement;
+      if (activeElement) {
+        activeElement.style.backgroundColor = 'transparent';
+        activeElement.style.color = 'inherit';
+      }
+    }
+  };
+
+  // Add event listener for keydown
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPaused, isGameOver]);
 
   return (
     <div className="app-wrapper" style={{
@@ -41,19 +59,19 @@ function App() {
         gap: '2rem',
         marginBottom: '2rem'
       }}>
-        <a href="https://vite.dev" target="_blank" style={{ 
-          filter: 'drop-shadow(0 0 0.75rem rgba(255,255,255,0.5))' 
+        <a href="https://vite.dev" target="_blank" style={{
+          filter: 'drop-shadow(0 0 0.75rem rgba(255,255,255,0.5))'
         }}>
           <img src={viteLogo} className="logo" alt="Vite logo" style={{ height: '8em' }} />
         </a>
-        <a href="https://react.dev" target="_blank" style={{ 
-          filter: 'drop-shadow(0 0 0.75rem rgba(255,255,255,0.5))' 
+        <a href="https://react.dev" target="_blank" style={{
+          filter: 'drop-shadow(0 0 0.75rem rgba(255,255,255,0.5))'
         }}>
           <img src={reactLogo} className="logo react" alt="React logo" style={{ height: '8em' }} />
         </a>
       </div>
-      <h1 style={{ 
-        fontSize: '3.2em', 
+      <h1 style={{
+        fontSize: '3.2em',
         marginBottom: '1rem',
         fontWeight: 'bold',
         letterSpacing: '2px'
@@ -81,8 +99,14 @@ function App() {
           fontSize: '1rem',
           marginBottom: '1rem'
         }}
-        onMouseDown={() => { document.activeElement.style.transform = 'scale(0.95)' }}
-        onMouseUp={() => { document.activeElement.style.transform = 'scale(1)' }}
+          onMouseDown={(e) => {
+            const button = e.currentTarget as HTMLButtonElement;
+            button.style.transform = 'scale(0.95)';
+          }}
+          onMouseUp={(e) => {
+            const button = e.currentTarget as HTMLButtonElement;
+            button.style.transform = 'scale(1)';
+          }}
         >
           count is {count}
         </button>

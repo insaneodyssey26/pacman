@@ -5,7 +5,6 @@ export class TimeTravelPacman {
     private ctx: CanvasRenderingContext2D;
     private gameState: GameState;
     private lastTime: number = 0;
-    private readonly GRID_SIZE = 20;
     private readonly CELL_SIZE = 30;
 
     constructor(canvasId: string) {
@@ -24,7 +23,15 @@ export class TimeTravelPacman {
             ghosts: this.createGhosts(),
             pacman: this.createPacman(),
             isGameOver: false,
-            isPaused: false
+            isPaused: false,
+            background: {
+                color: '#000000',
+                gradient: {
+                    start: '#1a1a1a',
+                    end: '#000000',
+                    angle: 45
+                }
+            }
         };
     }
 
@@ -71,7 +78,7 @@ export class TimeTravelPacman {
                         position: { x, y },
                         collected: false,
                         timeEffect: effects[Math.floor(Math.random() * effects.length)],
-                        update: () => {},
+                        update: () => { },
                         draw: (ctx: CanvasRenderingContext2D) => this.drawTimeCrystal(ctx, x, y)
                     });
                 }
@@ -117,20 +124,20 @@ export class TimeTravelPacman {
     public resetGame(): void {
         // Reset the game state
         this.gameState = this.initializeGameState();
-        
+
         // Reset the last time to prevent large deltaTime on first frame
         this.lastTime = performance.now();
-        
+
         // Clear any existing game over or pause state
         this.gameState.isGameOver = false;
         this.gameState.isPaused = false;
-        
+
         // Reset the canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
+
         // Redraw the initial state
         this.draw();
-        
+
         // Restart the game loop
         this.start();
     }
@@ -154,7 +161,7 @@ export class TimeTravelPacman {
         // Simple ghost AI - move towards Pacman
         const dx = this.gameState.pacman.position.x - ghost.position.x;
         const dy = this.gameState.pacman.position.y - ghost.position.y;
-        
+
         if (Math.abs(dx) > Math.abs(dy)) {
             ghost.direction = { x: Math.sign(dx), y: 0 };
         } else {
@@ -170,7 +177,7 @@ export class TimeTravelPacman {
             pacman.position.y * this.CELL_SIZE + this.CELL_SIZE / 2
         );
         ctx.rotate(Math.atan2(pacman.direction.y, pacman.direction.x));
-        
+
         ctx.beginPath();
         ctx.arc(0, 0, this.CELL_SIZE / 2, pacman.mouthAngle, Math.PI * 2 - pacman.mouthAngle);
         ctx.lineTo(0, 0);
